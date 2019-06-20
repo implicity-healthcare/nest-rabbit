@@ -1,0 +1,51 @@
+{
+  "name": "nrabbit",
+  "version": "0.0.0",
+  "description": "description",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "coveralls": "yarn run coverage --coverageReporters=text-lcov | coveralls",
+    "test:watch": "jest --watch",
+    "build": "rm -rf ./dist && tsc",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "@nestjs/common": "6.3.1",
+    "@nestjs/core": "6.3.1",
+    "@nestjs/testing": "6.3.1",
+    "@types/amqp-connection-manager": "^2.0.4",
+    "amqp-connection-manager": "2.3.2",
+    "amqplib": "0.5.3",
+    "lodash": "4.17.11",
+    "reflect-metadata": "0.1.13",
+    "rxjs": "6.5.2"
+  },
+  "devDependencies": {
+    "@types/amqplib": "0.5.12",
+    "@types/consul": "0.23.33",
+    "@types/jest": "24.0.14",
+    "@types/lodash": "4.14.134",
+    "coveralls": "3.0.4",
+    "jest": "24.8.0",
+    "prettier": "1.18.2",
+    "ts-jest": "24.0.2",
+    "typescript": "3.5.2"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  }
+}
