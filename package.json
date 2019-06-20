@@ -1,20 +1,26 @@
 {
   "name": "@implicity/nest-rabbit",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "description",
   "author": "",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
     "coveralls": "yarn run coverage --coverageReporters=text-lcov | coveralls",
     "test:watch": "jest --watch",
-    "build": "rm -rf ./dist && tsc",
+    "build": "rm -rf ./lib && tsc",
     "prepublish": "npm run build"
   },
+  "files": [
+    "lib",
+    "node_modules"
+  ],
   "dependencies": {
     "@nestjs/common": "6.3.1",
     "@nestjs/core": "6.3.1",
