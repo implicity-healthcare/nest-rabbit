@@ -26,8 +26,9 @@ export class NestRabbitModule {
         const rabbitConnectionProvider = {
             provide: NestRabbitMQConnectionProvider,
             useFactory: async (): Promise<any> => {
-                return await amqp.connect(configuration.urls, configuration.options);
-            },
+                return await amqp.connect(configuration.urls, configuration.options)
+                  .on('disconnect', reason => console.error(`[NestRabbit] ${ reason.err.message }`));
+            }
         };
 
         const rabbitServiceProvider = {
