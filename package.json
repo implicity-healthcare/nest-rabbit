@@ -28,7 +28,7 @@
     "@types/amqp-connection-manager": "^2.0.4",
     "amqp-connection-manager": "2.3.2",
     "amqplib": "0.5.3",
-    "lodash": "4.17.11",
+    "lodash": "4.17.15",
     "reflect-metadata": "0.1.13",
     "rxjs": "6.5.2"
   },
