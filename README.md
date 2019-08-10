@@ -54,7 +54,7 @@ export class WatcherService {
     }
 
     public async setup(event: string, handler: (channel: any, message: any) => Promise<void>): Promise<void> {
-        const queue = { name: 'my_custom_queue' };
+        const queue = { name: event };
         const consumption = { handler: this.onMessageReceived, options: { noAck: false } };
 
         await this.rabbitService
