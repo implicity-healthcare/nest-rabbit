@@ -1,4 +1,4 @@
-import { Injectable, OnModuleDestroy} from '@nestjs/common';
+import { Injectable, Logger, LoggerService, OnModuleDestroy, Optional } from '@nestjs/common';
 import { AmqpConnectionManager, ChannelWrapper, } from 'amqp-connection-manager';
 import { INRSubscriptionConfiguration } from '../interfaces';
 import { Replies } from 'amqplib';
@@ -10,11 +10,14 @@ export class NestRabbitService implements OnModuleDestroy {
 
     constructor(
         private readonly connection: AmqpConnectionManager,
+        @Optional()
+        private readonly logger?: LoggerService,
     ) {
         /**
          * Default capacity to stack messages on this side.
          * Helps to maintain a fair dispatch among workers. see: https://www.rabbitmq.com/tutorials/tutorial-two-javascript.html
          */
+        this.logger = logger || new Logger(NestRabbitService.name);
         this.prefetchCapacity = 1;
         this.channelManager = this.connection
             .createChannel({ json: true });
@@ -41,15 +44,15 @@ export class NestRabbitService implements OnModuleDestroy {
         this.channelManager.addSetup(async channel => {
             const queue: Replies.AssertQueue = await channel.assertQueue(queueOptions.name, queueOptions.options);
 
+            this.logger?.log(`Queue "${queue.queue}" asserted.`);
+
             if (exchangeOptions) {
                 /**
                  * Here we use queue and exchange .name in case the developer put empty string.
                  * If so, Rabbit will generate a random name.
                  */
                 const exchange: Replies.AssertExchange = await channel.assertExchange(exchangeOptions.name, exchangeOptions.type, exchangeOptions.options);
-
-                for (let pattern of exchangeOptions.patterns)
-                    await channel.bindQueue(queue.queue, exchange.exchange, pattern);
+                this.logger?.log(`Exchange "${exchange.exchange}" asserted.`);
             }
 
             await channel.prefetch(prefetchOptions);

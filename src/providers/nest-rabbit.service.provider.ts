@@ -1,8 +1,9 @@
-import { NestRabbitService } from '..';
 import { AmqpConnectionManager } from 'amqp-connection-manager';
+import { Provider } from '@nestjs/common';
+import { NestRabbitService } from '../services/nest-rabbit.service';
 import { NestRabbitConnection } from '../constants';
 
-export const NestRabbitServiceProvider =  {
+export const NestRabbitServiceProvider: Provider =  {
     provide: NestRabbitService,
     inject: [
         NestRabbitConnection

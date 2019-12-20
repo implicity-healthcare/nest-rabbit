@@ -10,7 +10,7 @@ export const NestRabbitConnectionProvider = {
         ConfigService
     ],
     useFactory: async (configService: ConfigService): Promise<any> => {
-        const configuration  = configService.get<INRModuleConfiguration>(NestRabbitConfigurationNamespace);
+        const configuration = configService.get<INRModuleConfiguration>(NestRabbitConfigurationNamespace);
         if (!configuration || !configuration.urls)
             throw new Error(`Missing configuration from @nestjs/config. Please register Nest-Rabbit configuration under the '${NestRabbitConfigurationNamespace}' namespace`);
 
