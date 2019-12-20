@@ -1,13 +1,10 @@
-import { Injectable, Logger, LoggerService, OnModuleDestroy} from '@nestjs/common';
+import { Injectable, OnModuleDestroy} from '@nestjs/common';
 import { AmqpConnectionManager, ChannelWrapper, } from 'amqp-connection-manager';
-import { INRSubscriptionConfiguration } from './interfaces';
+import { INRSubscriptionConfiguration } from '../interfaces';
 import { Replies } from 'amqplib';
-
-
 
 @Injectable()
 export class NestRabbitService implements OnModuleDestroy {
-    private readonly logger: LoggerService = new Logger(NestRabbitService.name);
     private readonly channelManager: ChannelWrapper;
     private prefetchCapacity: number;
 
@@ -43,8 +40,6 @@ export class NestRabbitService implements OnModuleDestroy {
 
         this.channelManager.addSetup(async channel => {
             const queue: Replies.AssertQueue = await channel.assertQueue(queueOptions.name, queueOptions.options);
-            this.logger
-                .debug(`Queue "${queue.queue}" asserted.`);
 
             if (exchangeOptions) {
                 /**
@@ -52,8 +47,6 @@ export class NestRabbitService implements OnModuleDestroy {
                  * If so, Rabbit will generate a random name.
                  */
                 const exchange: Replies.AssertExchange = await channel.assertExchange(exchangeOptions.name, exchangeOptions.type, exchangeOptions.options);
-                this.logger
-                    .debug(`Exchange "${exchange.exchange}" asserted.`);
 
                 for (let pattern of exchangeOptions.patterns)
                     await channel.bindQueue(queue.queue, exchange.exchange, pattern);

@@ -1,2 +1,1 @@
-export const NestRabbitMQServiceProvider = 'RabbitServiceProviderToken';
-export const NestRabbitMQConnectionProvider = 'RabbitConnectionToken';
+export const NestRabbitConnection = 'NestRabbitConnection';
