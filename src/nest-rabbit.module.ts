@@ -2,7 +2,6 @@ import { DynamicModule, Global, Module } from '@nestjs/common';
 import { NestRabbitService } from './nest-rabbit.service';
 import { INRModuleConfiguration } from './interfaces';
 import {
-    NestRabbitMQConfigurationProvider,
     NestRabbitMQConnectionProvider,
     NestRabbitMQServiceProvider
 } from './constants';
@@ -15,33 +14,34 @@ import { ConfigService } from '@nestjs/config';
 export class NestRabbitModule {
 
     static init(configuration?: INRModuleConfiguration): DynamicModule {
-
-        const rabbitConfigurationProvider = {
-            provide: NestRabbitMQConfigurationProvider,
-            useFactory: (configService: ConfigService): INRModuleConfiguration => configService.get<INRModuleConfiguration>('NRabbit', configuration),
-            inject: [ConfigService]
-        };
-
         /**
          * Configure rabbit client by connecting to the
          */
         const rabbitConnectionProvider = {
             provide: NestRabbitMQConnectionProvider,
-            useFactory: async (configuration: INRModuleConfiguration): Promise<any> => amqp.connect(configuration.urls, configuration.options),
-            inject: [NestRabbitMQConfigurationProvider]
+            inject: [
+                ConfigService
+            ],
+            useFactory: async (configService: ConfigService): Promise<any> => {
+                const options = configService.get<INRModuleConfiguration>('NRabbit', configuration);
+                return amqp.connect(options.urls, options.options)
+            }
         };
 
         const rabbitServiceProvider = {
             provide: NestRabbitMQServiceProvider,
-            useFactory: async (connection: AmqpConnectionManager): Promise<NestRabbitService> => {
-                return new NestRabbitService(connection);
-            },
-            inject: [NestRabbitMQConnectionProvider],
+            inject: [
+                NestRabbitMQConnectionProvider
+            ],
+            useFactory: async (connection: AmqpConnectionManager): Promise<NestRabbitService> => new NestRabbitService(connection),
         };
 
         return {
             module: NestRabbitModule,
-            providers: [rabbitConfigurationProvider, rabbitConnectionProvider, rabbitServiceProvider],
+            imports: [
+                ConfigService,
+            ],
+            providers: [rabbitConnectionProvider, rabbitServiceProvider],
             exports: [rabbitServiceProvider],
         };
     }
